@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+int main(int argc, char *argv[])
+{
+  FILE *fp;
+  int array [101]={0};
+  fp = freopen(argv[1],"r");
+  while (gets(line,101,))
+    {
+
+    }
+
+  return 0;
+}

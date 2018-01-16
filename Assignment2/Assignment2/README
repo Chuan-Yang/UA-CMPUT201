@@ -1,0 +1,29 @@
+# name:               Chuan Yang
+# ONE Card number:    1421992
+# Unix id:            chuan1
+# lecture section:    A1
+# lab section:        D05
+# TA's name:          Juehui Fan
+#
+
+Does the following (see draw1b.c comment for more details)
+
+Read one line at a time
+========================
+1. Take the first word out to the str[] from line.
+2. compare every first word to the 8 words required in the question.
+3. After the comparing, handle the different command:
+	     # - comments directly print to the stdout
+	 Image - record the start points and the image name to the struct image
+     	lineTo - record the points int the latest image
+	 print - use the function print_stdout(), ouput the image
+		 and handle the empty image
+	  draw - use the function draw(), send the "drawSegment" command to the
+		 fppo, i.e. the Sketchpad
+     translate - use the function translate, move the whole image
+
+
+
+Compile by typing make.
+
+

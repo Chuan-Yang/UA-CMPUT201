@@ -1,0 +1,18 @@
+# name:               Neil Burch
+# ONE Card number:    9999999
+# Unix id:            burch
+# lecture section:    A1
+# lab section:        D01
+# TA's name:          Your TAName
+#
+# Creates a parse executable, and provides a make clean.
+#
+
+a: a.o
+	gcc -Wall -std=c99 -o a a.o -lm
+
+a.o: a.c a.h
+	gcc -Wall -std=c99 -c a.c
+
+clean:
+	-rm -f *.o a core

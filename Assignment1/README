@@ -1,0 +1,20 @@
+# name:               Chuan Yang
+# ONE Card number:    1421992
+# Unix id:            chuan1
+# lecture section:    A1
+# lab section:        D05
+# TA's name:          Juehui Fan
+#
+
+Does the following (see draw1a.c comment for more details)
+
+Read one line at a time
+========================
+1. Take the first word out to the str[] from line.
+2. compare every first word to the 8 words required in the question.
+3. After the comparing,  use ans[] to record the number of the times that the words appear.
+4. Finally, print the first 2 lines and all the other lines.
+
+Compile by typing make.
+
+

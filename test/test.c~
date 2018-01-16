@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+extern *popen(const char *command, const char *type);
+extern pclose (FILE *stream);
+
+int main()
+{
+  FILE *fppo;
+  fppo = popen("java -jar Sketchpad.jar");
+  pclose(fppo);
+}

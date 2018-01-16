@@ -1,0 +1,26 @@
+/*
+ * Name: Chuan Yang
+ * ID:   1421992
+ * CSID: chuan1
+ * Lec Section: A1
+ * LAB Seciton: D05
+ * TA's Name: Juehui Fan
+ */
+
+1. Use make to compile the program and create the lander file
+2. Run ./lander -t ?? -f ?? -g ?? to begin the game
+3. Funcions:
+	erase_old           - erase the old ship or the thrust fire 
+	draw 		    - draw the ship 
+	landscape 	    - draw the landscape
+	hanle_signal 	    - the key signa function, every time call that, it
+			      will erase the old ship firstly, and then begin 				      to update the new position of the ship, then it 				      will check if the we pressed the direction keys 				      or SPACE, at last it wil check if the ship 				      crashed or landed nad return.
+
+
+**IMPROVEMENT:
+SMALL ONE
+1. it can dispose the unvalid input like :
+		./lander -fasdasad 
+		./lander -f landscape.txt -g 9 -t -20 asdasadasdad
+		etc.
+

@@ -1,0 +1,339 @@
+/*
+ * Name: Chuan Yang
+ * ID:   1421992
+ * CSID: chuan1
+ * Lec Section: A1
+ * LAB Seciton: D05
+ * TA's Name: Juehui Fan
+ */
+
+
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <time.h>
+#include <stdlib.h>
+#include "draw2.h"
+
+#define _XOPEN_SOURCE
+
+
+
+int main(int argc, char *argv[])
+{
+  FILE *fp;
+  char line[MAX_LINE_LEN];  	//record every line in the file
+  long int i = 0;		//index in for loop
+  int in_image = 0;             //check if the input is between "Image" and "End"
+  char start_image[MAX_NAMELEN];//check if the names of images are the same between begin and en
+
+  struct Images *image ;
+  image = malloc (50*sizeof (struct Images));
+  memset (image,0,50*sizeof (struct Images));
+  memset(line,0,sizeof(line));
+  fp = freopen(argv[1],"r",stdin);
+  fppo = popen("java -jar Sketchpad.jar","w");
+  if (fp == NULL)		//check if the inputfile valid
+    {
+      fprintf (stderr,"draw2: %ld, error.\n",line_number);
+      fprintf (fppo,"end\n");	      
+      fclose (fp);
+      pclose (fppo);
+      free(image);
+      exit(EXIT_FAILURE);
+    }
+
+  else if (argc != 2)           //check if the shell command valid
+    {
+      fprintf (stderr,"draw2: %ld, error.\n",line_number);
+      fprintf (fppo,"end\n");	      
+      fclose (fp);
+      pclose (fppo);
+      free(image);
+      exit(EXIT_FAILURE);
+    }
+  else
+    {
+      printf("%s started on ",argv[0]);
+      fflush (stdout);
+      system("date\n");
+      printf("Input file: %s\n",argv[1]);
+      while(fgets(line,MAX_LINE_LEN,fp))	    //input one line of a time
+	{
+	  int len = 0,begin = 0;    //begin is to record the first char that isn't a space
+	  int empty_line = 1;    
+	  line_number ++;
+	  for (i=0;i<strlen(line);i++)
+	    if ((line[i] != ' ')&&(line[i] != '\n'))
+	      {
+		begin = i;
+		empty_line = 0;
+		break;
+	      }
+
+	  if (empty_line)
+	    continue;
+
+	  while (line[begin+len]!=' ') 	//get the length of the first word of every line
+	    len++; 
+			
+	  char str [10]; 	//get the first word if every line
+	  memset(str,0,sizeof(str));
+	  for (i=0; i<len ;i++)
+	    str[i] = line[i+begin];
+
+			
+	  //printf ("%s\n",str);  for debugging
+			
+	  //begin to handle  every command
+	  if (!strcmp(str,"Image"))
+	    {
+	      if (in_image == 1) 
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		  
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		  
+		  exit(EXIT_FAILURE);
+		}
+	      char image_name[MAX_NAMELEN];
+	      double image_x=0.0,image_y=0.0;
+	      if ( sscanf (line,"%s %s %lf %lf =",str,image_name,&image_x, &image_y) != 4)
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		  
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		  
+		  exit(EXIT_FAILURE);
+		}
+	      strcpy(image[image_index].name, image_name);
+	      strcpy(start_image,image_name);
+	      in_image = 1;
+	      image[image_index].x[image[image_index].number] = image_x;
+	      image[image_index].y[image[image_index].number] = image_y;
+	      image[image_index].number ++;	   
+	  }
+
+	  else if (!strcmp(str,"lineTo"))
+	    {
+	      if (in_image == 0) 
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		  
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		  
+		  exit(EXIT_FAILURE);
+		}
+	      double add_x,add_y;
+	      int index = image[image_index].number;
+	      if (sscanf (line,"%s %lf %lf",str,&add_x, &add_y) != 3)
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		  
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		 
+		  exit(EXIT_FAILURE);
+		}
+	      image[image_index].x[index] = image[image_index].x[index-1]+add_x;
+	      image[image_index].y[index] = image[image_index].y[index-1]+add_y;
+ 	      image[image_index].number ++;
+	    }
+		    
+	  else if (!strcmp(str,"End"))
+	    {
+	      char image_name [MAX_NAMELEN];
+	      sscanf (line,"%s Image %s",str,image_name);
+	      if (strcmp(start_image,image_name))
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);
+		  exit(EXIT_FAILURE);
+		}
+	      image_index++;
+	      in_image = 0;
+	      if (image_index == len_image)
+		{
+		  image = realloc(image,2*MAX_LINE_LEN*(sizeof(image)));
+		  len_image *= 2;
+		}
+	    }
+
+	  else if (!strcmp(str,"print"))
+	    {
+	      if (in_image == 1) 
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		  
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		  
+		  exit(EXIT_FAILURE);
+		}
+	      char image_name[MAX_LINE_LEN];
+	      if (sscanf (line,"%s %s",str,image_name) != 2)
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		 
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		  
+		  exit(EXIT_FAILURE);
+		}
+	      if (print_stdout(fppo,image,image_name) == 0)
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		 
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		 
+		  exit(EXIT_FAILURE);
+		}
+	    }
+
+	  else if (!strcmp(str,"draw"))
+	    {
+	      if (in_image == 1) 
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		 
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		 		 
+		  exit(EXIT_FAILURE);
+		}
+	      char image_name[MAX_LINE_LEN];
+	      if (sscanf (line,"%s %s",str,image_name) != 2)
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		 
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		 
+		  exit(EXIT_FAILURE);
+		}
+	      draw(fppo,image,image_name,fp);
+	    }
+
+	  else if (!strcmp(str,"translate"))
+	    {
+	      if (in_image == 1) 
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		 
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		  
+		  exit(EXIT_FAILURE);
+		}
+	      char image_name[MAX_LINE_LEN];
+	      double move_x,move_y;
+	      if (sscanf(line,"%s %s %lf %lf",str,image_name,&move_x,&move_y) != 4)
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		 
+		  exit(EXIT_FAILURE);
+		}
+	      translate (fppo,image,image_name,move_x,move_y,fp);
+	    }
+
+	  else if (!strcmp(str,"rotate"))
+	    {
+	      if (in_image == 1) 
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		 
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		 
+		  exit(EXIT_FAILURE);
+		}
+	      char image_name[MAX_LINE_LEN];
+	      double angle_degrees = 0.0,angle_radians = 0.0;
+	      if (sscanf(line,"%s %s %lf",str,image_name,&angle_degrees) != 3)
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		  
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);
+		  exit(EXIT_FAILURE);
+		}
+	      angle_radians = angle_degrees * M_PI / 180.0;
+	      rotate (fppo,image,image_name,angle_radians,fp);
+
+	    }
+
+	  else if (!strcmp(str,"child"))
+	    {
+	      if (in_image == 1) 
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);		  
+		  exit(EXIT_FAILURE);
+		}
+
+	      char child_process[MAX_LINE_LEN]={""};
+	      char command[7];
+	      double time_read = 0.0;
+	      for (i=0;i<strlen(line);i++)
+		child_process [i] = line[i + begin + len + 1];
+
+	      if (strncmp(child_process, "clearScreen", 11) == 0)
+		fprintf(fppo, "clearScreen\n");
+	      else if (strncmp(child_process, "end", 3) == 0)
+		fprintf(fppo, "end\n");
+	      else if ( sscanf(child_process,"%s %lf", command, &time_read) == 2 &&
+			       strcmp(command, "pause") == 0)
+		fprintf(fppo, "pause %ld\n", lround(time_read));
+	      else
+		{
+		  fprintf (stderr,"draw2: %ld, error.\n",line_number);
+		  fprintf (fppo,"end\n");		  
+		  fclose (fp);
+		  pclose (fppo);
+		  free(image);
+		  exit(EXIT_FAILURE);
+		}
+	      /*
+	      for (i=6+begin;i<strlen(line);i++)
+		child_process[i-6] = line [i];
+	      fprintf(fppo,"%s\n",child_process);
+	      */
+	    }
+
+	  else if (!strcmp(str,"#"))
+	    printf("%s",line);
+	  
+	  else
+	    {
+	      fprintf (stderr,"draw2: %ld, error.\n",line_number);
+	      fprintf (fppo,"end\n");	      
+	      fclose (fp);
+	      pclose (fppo);
+	      free(image);
+	      exit(EXIT_FAILURE);
+	    }
+	  memset(line,0,sizeof(line));
+	}
+    }
+  
+			
+	
+  fclose (fp);
+  pclose (fppo);
+  free(image);
+  return EXIT_SUCCESS;
+}

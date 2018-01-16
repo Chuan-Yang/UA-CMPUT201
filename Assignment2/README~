@@ -1,0 +1,38 @@
+# name:               Chuan Yang
+# ONE Card number:    1421992
+# Unix id:            chuan1
+# lecture section:    A1
+# lab section:        D05
+# TA's name:          Juehui Fan
+#
+
+Does the following (see draw1b.c comment for more details)
+
+Read one line at a time
+========================
+1. Take the first word out to the str[] from line.
+2. compare every first word to the 8 words required in the question.
+3. After the comparing, handle the different command:
+	     # - comments directly print to the stdout
+	 Image - record the start points and the image name to the struct image
+     	lineTo - record the points int the latest image
+	 print - use the function print_stdout(), ouput the image
+		 and handle the empty image
+	  draw - use the function draw(), send the "drawSegment" command to the
+		 fppo, i.e. the Sketchpad
+     translate - use the function translate, move the whole image
+	rotate - use the function rotate(), first translate the angle_dgree to angle_radius in the main(),
+		 then use this function to move the image
+4. For every part in the main, use 1. the return value of sscanf
+				   2. in_iamge to check if other commands except lineTo and comment will appear 				      between Image and End
+				   3. start_image to check if the begin image and the end image match.
+				   4. "else" to find the unvalid first word
+   these 4 steps to handle the special errors and situations.
+5. At the beginning of the code, use argc to check if the shell command is valid. 
+6. Also, use str to delete the space in the beginning of every line.
+
+
+
+Compile by typing make.
+
+
